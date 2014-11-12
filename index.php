@@ -9,7 +9,7 @@ $dbh = new PDO('mysql:dbname=' . DB_NAME . ';host=' . DB_SERVER . ';charset=utf8
 session_start();
 
 if(!isset($_SESSION["login"])){
-    $_SESSION["login"] = null;
+    
 }
 $_SESSION["login"] = filter_input(INPUT_POST, 'anvnam', FILTER_SANITIZE_SPECIAL_CHARS);
 
@@ -18,16 +18,28 @@ $_SESSION["login"] = filter_input(INPUT_POST, 'anvnam', FILTER_SANITIZE_SPECIAL_
 if(!isset($_POST["anvnam"]) and !isset($_POST["losord"])){
     echo 'Fyll i båda användarnamn och lösenord tack!';   
 }
+
+if(isset($_POST["anvnam"]) and !isset($_POST["losord"])){
 $anvnam = filter_input(INPUT_POST, 'anvnam', FILTER_SANITIZE_SPECIAL_CHARS);
 $losord = filter_input(INPUT_POST, 'losord', FILTER_SANITIZE_SPECIAL_CHARS);
 $sql = "SELECT * FROM `login` WHERE username='$anvnam' AND password='$losord'";
-//echo $sql;
-    $stmt = $dbh->prepare($sql);
+$stmt = $dbh->prepare($sql);
     $stmt->execute();
 
     $login = $stmt->fetch();
+    
+    if(!empty($login)){
+        $_SESSION["login"];
+    }
 
+}
 
+if(isset($_SESSION["login"])){
+    echo 'Välkommen, du är nu inloggad!';
+}
+
+    
+    
 
 
 ?>
@@ -45,5 +57,10 @@ $sql = "SELECT * FROM `login` WHERE username='$anvnam' AND password='$losord'";
             <p>Lösenord:</p><input type="text" name="losord">
             <input type="submit" value="Logga in">
         </form>
+        
+        <?php
+    
+?>
+
     </body>
 </html>
