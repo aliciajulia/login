@@ -26,20 +26,18 @@ if (isset($_POST["anvnam"])) {
 
     $login = $stmt->fetch();
 
-    
+
     if (!empty($login)) {
-        $_SESSION["login"]=1;
+        $_SESSION["login"] = 1;
+        $_SESSION["namn"] = $anvnam;
         echo '<p>Välkommen, du är nu inloggad!</p>';
+    } else {
+        echo 'Något stämde inte!';
     }
-    
-} else {
-    echo 'Något stämde inte!';
 }
 
-if ($_SESSION["login"]=1){
-    echo '<p>Du är nu inloggad som '.$anvnam.'!</p>';
-    
-    
+if ($_SESSION["login"] == 1) {
+    echo "<p>Du är nu inloggad som " . $_SESSION["namn"] . "!</p>";
 }
 
 //
@@ -67,7 +65,7 @@ var_dump($_SESSION);
             <input type="submit" value="Logga in">
         </form>
         <!--logga ut knapp-->
-           
+
 
     </body>
 </html>
