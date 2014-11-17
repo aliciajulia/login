@@ -8,40 +8,49 @@ $dbh = new PDO('mysql:dbname=' . DB_NAME . ';host=' . DB_SERVER . ';charset=utf8
 
 session_start();
 
-if(!isset($_SESSION["login"])){
-    
-}
-$_SESSION["login"] = filter_input(INPUT_POST, 'anvnam', FILTER_SANITIZE_SPECIAL_CHARS);
-
+//if (!isset($_SESSION["login"])) {
+//    $_SESSION["login"];
+//}
+//$_SESSION["login"] = filter_input(INPUT_POST, 'anvnam', FILTER_SANITIZE_SPECIAL_CHARS);
 //var_dump($_SESSION);
 
-if(!isset($_POST["anvnam"]) and !isset($_POST["losord"])){
-    echo 'Fyll i båda användarnamn och lösenord tack!';   
-}
-
-if(isset($_POST["anvnam"]) and !isset($_POST["losord"])){
-$anvnam = filter_input(INPUT_POST, 'anvnam', FILTER_SANITIZE_SPECIAL_CHARS);
-$losord = filter_input(INPUT_POST, 'losord', FILTER_SANITIZE_SPECIAL_CHARS);
-$sql = "SELECT * FROM `login` WHERE username='$anvnam' AND password='$losord'";
-$stmt = $dbh->prepare($sql);
+if (isset($_POST["anvnam"])) {
+    $anvnam = filter_input(INPUT_POST, 'anvnam', FILTER_SANITIZE_SPECIAL_CHARS);
+    $losord = filter_input(INPUT_POST, 'losord', FILTER_SANITIZE_SPECIAL_CHARS);
+    $sql = "SELECT * FROM `login` WHERE username='$anvnam' AND password='$losord'";
+    echo $sql;
+    $stmt = $dbh->prepare($sql);
+    $stmt->bindParam(":anvnam", $anvnam);
+    $stmt->bindParam(":losord", $losord);
     $stmt->execute();
 
     $login = $stmt->fetch();
+
     
-    if(!empty($login)){
-        $_SESSION["login"];
+    if (!empty($login)) {
+        $_SESSION["login"]=1;
+        echo '<p>Välkommen, du är nu inloggad!</p>';
     }
-
+    
+} else {
+    echo 'Något stämde inte!';
 }
 
-if(isset($_SESSION["login"])){
-    echo 'Välkommen, du är nu inloggad!';
+if ($_SESSION["login"]=1){
+    echo '<p>Du är nu inloggad som '.$anvnam.'!</p>';
+    
+    
 }
 
-    
-    
+//
+//if (isset($_SESSION["login"])) {
+//    
+//}
 
 
+
+
+var_dump($_SESSION);
 ?>
 
 <!DOCTYPE html>
@@ -53,14 +62,12 @@ if(isset($_SESSION["login"])){
     </head>
     <body>
         <form method="POST">
-            <p>Användarnamn:</p> <input type="text" name="anvnam">
-            <p>Lösenord:</p><input type="text" name="losord">
+            <p>Användarnamn:</p> <input type="text" name="anvnam" required>
+            <p>Lösenord:</p><input type="text" name="losord" required>
             <input type="submit" value="Logga in">
         </form>
-        
-        <?php
-    
-?>
+        <!--logga ut knapp-->
+           
 
     </body>
 </html>
